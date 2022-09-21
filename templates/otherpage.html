@@ -29,6 +29,20 @@
     <script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
 
     <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('preview').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                document.getElementById('preview').src = "";
+            }
+        }
+    </script>
+
+    <script>
         $(document).ready(function () {
             find_post();
             look_feedback()
@@ -41,27 +55,30 @@
                 url: '/posting/save',
                 data: {},
                 success: function (response) {
-                    let rows = response['post']
+                    let rows = response['posts']
+                    for (let i = 0; i < rows.length; i++) {
+                        let title = rows[i]['title']
+                        let id = rows[i]['username']
+                        let name = rows[i]['username1']
+                        let num = rows[i]['num']
 
-                            let title = rows['title']
-                            let kind = rows['kind']
-                            let name = rows['username1']
-                            let comment = rows['comment']
-                            let time = rows['time']
+                        let temp_html = ``
 
+                        if (num == window.location.href.split("/")[4]) {
+                            temp_html = `<a id="main-card" href="/post/${num}" class="col">
+                                            <div class="card h-100">
+                                                <img src= "../static/${num}.png" alt="사진"/>
+                                                <div class="card-body">
+                                                    <h5 class="card-title">${title}</h5>
+                                                    <p class="card-text">${name}</p>
+                                                </div>
+                                            </div>
+                                        </a>`
+                        }
 
-
-                                let temp_html = `<h5 >${title}</h5>
-                                            <p >${name}</p>
-                                            <p >${kind}</p>
-                                            <p>${comment}</p>
-                                            <p>${time}</p>`
-
-                            $('#card').append(temp_html)
-
-
+                        $('#post-card').append(temp_html)
+                    }
                 }
-
             })
         }
 
@@ -73,14 +90,14 @@
                 success: function (response) {
                     let rows = response['feedbacks']
 
-                    for(let i = 0; i < rows.length; i++) {
+                    for (let i = 0; i < rows.length; i++) {
                         let name = rows[i]['name']
                         let feedback = rows[i]['feedback']
                         let num = rows[i]['num']
 
                         let temp_html = ''
 
-                        if(num == window.location.href.split("/")[4]) {
+                        if (num == window.location.href.split("/")[4]) {
                             temp_html = `<text>${name}: ${feedback}</text><br/>`
                         }
                         $('#input_feedbacks').append(temp_html)
@@ -124,7 +141,10 @@
             </button>
         </div>
     </div>
-<div id="input_feedbacks"/>
+    <div class="post-box">
+    <div class="row row-cols-1 row-cols-md-4 g-4" id="post-card"/>
+</div>
+    <div id="input_feedbacks"/>
 </div>
 </body>
 </html>

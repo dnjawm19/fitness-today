@@ -152,7 +152,7 @@ def posting():
 
         file = request.files["file_give"]
 
-        post_list = list(db.posts.find({}, {'_id: False'}))
+        post_list = list(db.posts.find({}, {'_id': False}))
         count = len(post_list) + 1
 
         save_to = f'static/{count}.png'

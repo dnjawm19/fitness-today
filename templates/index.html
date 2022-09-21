@@ -47,19 +47,24 @@
         });
 
         function listing() {
+            let search = $('#input_search').val()
             $.ajax({
                 type: 'GET',
                 url: '/posting/save',
                 data: {},
                 success: function (response) {
                     let rows = response['posts']
+                    $('#post-card').empty()
                     for (let i = 0; i < rows.length; i++) {
                         let title = rows[i]['title']
                         let id = rows[i]['username']
                         let name = rows[i]['username1']
                         let num = rows[i]['num']
 
-                        let temp_html = `<a id="main-card" href="/post/${num}" class="col">
+                        let temp_html = ``
+
+                        if(search == 0) {
+                            temp_html = `<a id="main-card" href="/post/${num}" class="col">
                                             <div class="card h-100">
                                                 <img src= "static/${num}.png" alt="사진"/>
                                                 <div class="card-body">
@@ -68,10 +73,22 @@
                                                 </div>
                                             </div>
                                         </a>`
+                        } else if(search == name) {
+                            temp_html = `<a id="main-card" href="/post/${num}" class="col">
+                                            <div class="card h-100">
+                                                <img src= "static/${num}.png" alt="사진"/>
+                                                <div class="card-body">
+                                                    <h5 class="card-title">${title}</h5>
+                                                    <p class="card-text">${name}</p>
+                                                </div>
+                                            </div>
+                                        </a>`
+                        }
 
 
                         $('#post-card').append(temp_html)
                     }
+                    search = 0
                 }
             })
         }
@@ -149,11 +166,11 @@
             <input class="input" id="input_search" type="text" placeholder="작성자를 검색하세요">
         </div>
         <div class="control">
-            <button class="button is-primary" onclick="search()">
+            <button class="button is-primary" onclick="listing()">
                 Search
             </button>
         </div>
-        <button onclick="refresh()" class="button is-warning">초기화</button>
+        <button onclick="window.location.reload()" class="button is-warning">초기화</button>
         <button class="button is-link" onclick="window.location.href='/posting/{{ user_info.username }}'">
             글 작성
         </button>
