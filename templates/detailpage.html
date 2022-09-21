@@ -73,7 +73,7 @@
         function look_feedback() {
             $.ajax({
                 type: 'GET',
-                url: '/posting/10/feedback_save',
+                url: '/posting/feedback_save',
                 data: {},
                 success: function (response) {
                     let rows = response['feedbacks']
@@ -101,7 +101,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "/posting/10/feedback_save",
+                url: "/posting/feedback_save",
                 data: {feedback_give: feedback, num_give: url},
                 success: function (response) {
                     alert(response["msg"])
@@ -123,7 +123,7 @@
         </div>
         <div class="control">
             <button class="button is-primary" onclick="get_feedback()">
-                Search
+                댓글 작성
             </button>
         </div>
     </div>

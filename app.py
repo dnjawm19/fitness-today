@@ -58,7 +58,7 @@ def detailpage(num):
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
         user_info = db.users.find_one({"username": payload["id"]}, {"_id": False})
-        return render_template('detailpage.html', user_info=user_info, post_info=post_info)
+        return render_template('detailpage.html', user_info=user_info)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
