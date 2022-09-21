@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+    <!-- Webpage Title -->
+    <title>상세페이지</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
+
+    <script>
+        $(document).ready(function () {
+            find_post();
+            look_feedback()
+        });
+
+
+        function find_post() {
+            $.ajax({
+                type: 'GET',
+                url: '/posting/save',
+                data: {},
+                success: function (response) {
+                    let rows = response['post']
+
+                            let title = rows['title']
+                            let kind = rows['kind']
+                            let name = rows['username1']
+                            let comment = rows['comment']
+                            let time = rows['time']
+
+
+
+                                let temp_html = `<h5 >${title}</h5>
+                                            <p >${name}</p>
+                                            <p >${kind}</p>
+                                            <p>${comment}</p>
+                                            <p>${time}</p>`
+
+                            $('#card').append(temp_html)
+
+
+                }
+
+            })
+        }
+
+        function look_feedback() {
+            $.ajax({
+                type: 'GET',
+                url: '/posting/10/feedback_save',
+                data: {},
+                success: function (response) {
+                    let rows = response['feedbacks']
+
+                    for(let i = 0; i < rows.length; i++) {
+                        let name = rows[i]['name']
+                        let feedback = rows[i]['feedback']
+                        let num = rows[i]['num']
+
+                        let temp_html = ''
+
+                        if(num == window.location.href.split("/")[4]) {
+                            temp_html = `<text>${name}: ${feedback}</text><br/>`
+                        }
+                        $('#input_feedbacks').append(temp_html)
+                    }
+                }
+            });
+        }
+
+        function get_feedback() {
+            let feedback = $('#input_feedback').val()
+            let url = window.location.href.split("/")[4]
+
+            $.ajax({
+                type: "POST",
+                url: "/posting/10/feedback_save",
+                data: {feedback_give: feedback, num_give: url},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<div>
+    <div>hi</div>
+    <input type="text" value=get() id="input-num"/>
+    <div>{{ user_info }}</div>
+    <div>{{ post_info }}</div>
+    post_info = db.posts.find_one({"num": '2'}, {"_id": False})
+
+    <div id="card"/>
+    <div class="field has-addons">
+        <div class="control">
+            <input class="input" id="input_feedback" type="text" placeholder="댓글입력">
+        </div>
+        <div class="control">
+            <button class="button is-primary" onclick="get_feedback()">
+                Search
+            </button>
+        </div>
+    </div>
+<div id="input_feedbacks"/>
+</div>
+</body>
+</html>

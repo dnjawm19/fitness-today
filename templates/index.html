@@ -10,7 +10,7 @@
             crossorigin="anonymous"></script>
 
     <!-- Webpage Title -->
-    <title>Log In | SWEETER</title>
+    <title>오늘의 운동</title>
 
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -57,11 +57,11 @@
                         let title = rows[i]['title']
                         let id = rows[i]['username']
                         let name = rows[i]['username1']
+                        let num = rows[i]['num']
 
-
-                        let temp_html = `<a href="/post/${name}/${title}" class="col">
+                        let temp_html = `<a id="main-card" href="/post/${num}" class="col">
                                             <div class="card h-100">
-                                                <img src= "static/${id}_${title}.png" alt="사진"/>
+                                                <img src= "static/${num}.png" alt="사진"/>
                                                 <div class="card-body">
                                                     <h5 class="card-title">${title}</h5>
                                                     <p class="card-text">${name}</p>
@@ -69,30 +69,64 @@
                                             </div>
                                         </a>`
 
+
                         $('#post-card').append(temp_html)
                     }
                 }
             })
         }
+    </script>
 
+    <script>
+        function search() {
+            let name = $('#input_search').val()
+
+            $.ajax({
+                type: "POST",
+                url: "/posting/find",
+                data: {name_give: name},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+
+        function refresh() {
+            $.ajax({
+                type: "POST",
+                url: "/posting/refresh",
+                data: {num_give: 0},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+
+
+    </script>
+
+    <script>
         function sign_out() {
             $.removeCookie('mytoken', {path: '/'});
             alert('로그아웃!')
             window.location.href = "/login"
         }
-
     </script>
 
 </head>
 <body>
+<div style="overflow-x:hidden;">
 <nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <a class="navbar-item" href="/">
-            <img src="{{ url_for('static', filename='logo.png') }}">
+            <img src="{{ url_for('static', filename='아령.jpg') }}">
             <strong class="is-sparta"
-                    style="font-family: 'Stylish', sans-serif;font-size: larger;">SWEETER</strong>
+                    style="font-family: 'Stylish', sans-serif;font-size: larger;">오늘의 운동</strong>
         </a>
-        <button onclick="sign_out()">로그아웃</button>
+        <p>반갑습니다 {{ user_info.username1 }}님</p>
+        <button class="button is-danger" onclick="sign_out()">로그아웃</button>
     </div>
 </nav>
 <section class="section">
@@ -105,27 +139,31 @@
                              src={{ url_for("static", filename="profile_pics/profile_placeholder.png") }} alt="Image">
                     </a>
                 </div>
-                <div class="media-content">
-                    <div class="content">
-                        <p>
-                            <strong>이름 : {{ user_info.username1 }}</strong> <small>아이디 : {{ user_info.username }}</small>
-
-                            <br>
-                            이름과 아이디
-                        </p>
-                    </div>
-                    <button onclick="window.location.href='/posting/{{ user_info.username }}'">
-                        글쓰기
-                    </button>
-                </div>
             </article>
         </div>
+    </div>
+</section>
+<section>
+    <div class="field has-addons">
+        <div class="control">
+            <input class="input" id="input_search" type="text" placeholder="작성자를 검색하세요">
+        </div>
+        <div class="control">
+            <button class="button is-primary" onclick="search()">
+                Search
+            </button>
+        </div>
+        <button onclick="refresh()" class="button is-warning">초기화</button>
+        <button class="button is-link" onclick="window.location.href='/posting/{{ user_info.username }}'">
+            글 작성
+        </button>
     </div>
 </section>
 <div class="post-box">
     <div class="row row-cols-1 row-cols-md-4 g-4" id="post-card"/>
 </div>
 <div id="user-box"></div>
+</div>
 
 </body>
 </html>

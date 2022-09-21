@@ -189,8 +189,27 @@
         }
     </script>
 
+    <script>
+        function sign_out() {
+            $.removeCookie('mytoken', {path: '/'});
+            alert('로그아웃!')
+            window.location.href = "/"
+        }
+    </script>
+
 </head>
 <body>
+<nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+            <img src="{{ url_for('static', filename='아령.jpg') }}">
+            <strong class="is-sparta"
+                    style="font-family: 'Stylish', sans-serif;font-size: larger;">오늘의 운동</strong>
+        </a>
+        <p>반갑습니다 {{ user_info.username1 }}님</p>
+        <button class="button is-success" onclick="window.location.href = '/'">홈으로</button>
+    </div>
+</nav>
 <div class="topimg"></div>
 <input type="text" class="is-hidden" value="{{ user_info.username1 }}" id="input-username1">
 <input type="text" class="is-hidden" value="{{ user_info.username }}" id="input-username">
