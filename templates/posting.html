@@ -102,6 +102,9 @@
         }
     </STYLE>
 
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     <script>
         // ----- 달력
         <link rel="stylesheet"
@@ -112,13 +115,13 @@
             rel="stylesheet"
             href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
     />
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     <script>
         $(function () {
             $("#input-datepicker").datepicker({dateFormat: "yy-mm-dd"});
         });
     </script>
+    {#    날짜 선택 달력#}
     <script>
         $.datepicker.setDefaults({
             dateFormat: 'yy-mm-dd',
@@ -136,7 +139,7 @@
             $("#input-datepicker").datepicker();
         });
     </script>
-
+    {#포스팅 정보 db에 저장#}
     <script>
         function posting() {
             let username = $('#input-username').val()
@@ -174,7 +177,7 @@
             });
         }
     </script>
-
+    {#사진 미리보기#}
     <script>
         function readURL(input) {
             if (input.files && input.files[0]) {
@@ -188,7 +191,7 @@
             }
         }
     </script>
-
+    {#로그아웃#}
     <script>
         function sign_out() {
             $.removeCookie('mytoken', {path: '/'});
@@ -198,7 +201,9 @@
     </script>
 
 </head>
+
 <body>
+{#네비게이션 바#}
 <nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <a class="navbar-item" href="/">
@@ -210,7 +215,9 @@
         <button class="button is-success" onclick="window.location.href = '/'">홈으로</button>
     </div>
 </nav>
+{#포스트 정보 입력#}
 <div class="topimg"></div>
+{#토글에서 유저정보 가져오기#}
 <input type="text" class="is-hidden" value="{{ user_info.username1 }}" id="input-username1">
 <input type="text" class="is-hidden" value="{{ user_info.username }}" id="input-username">
 
@@ -270,5 +277,7 @@
         <button onclick="window.location.href='/'" class="btn btn-dark">취소</button>
     </div>
 </div>
+
 </body>
+
 </html>

@@ -27,6 +27,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
+    {#    사진 미리보기#}
     <script>
         function readURL(input) {
             if (input.files && input.files[0]) {
@@ -45,6 +46,7 @@
         $(document).ready(function () {
             listing();
         });
+        {#db에서 포스팅 정보 가져오기 및 출력 준비#}
 
         function listing() {
             let search = $('#input_search').val()
@@ -57,13 +59,12 @@
                     $('#post-card').empty()
                     for (let i = 0; i < rows.length; i++) {
                         let title = rows[i]['title']
-                        let id = rows[i]['username']
                         let name = rows[i]['username1']
                         let num = rows[i]['num']
 
                         let temp_html = ``
 
-                        if(search == 0) {
+                        if (search == 0) {
                             temp_html = `<a id="main-card" href="/post/${num}" class="col">
                                             <div class="card h-100">
                                                 <img src= "static/${num}.png" alt="사진"/>
@@ -73,7 +74,7 @@
                                                 </div>
                                             </div>
                                         </a>`
-                        } else if(search == name) {
+                        } else if (search == name) {
                             temp_html = `<a id="main-card" href="/post/${num}" class="col">
                                             <div class="card h-100">
                                                 <img src= "static/${num}.png" alt="사진"/>
@@ -84,8 +85,6 @@
                                             </div>
                                         </a>`
                         }
-
-
                         $('#post-card').append(temp_html)
                     }
                     search = 0
@@ -95,92 +94,53 @@
     </script>
 
     <script>
-        function search() {
-            let name = $('#input_search').val()
+        {#        로그아웃#}
 
-            $.ajax({
-                type: "POST",
-                url: "/posting/find",
-                data: {name_give: name},
-                success: function (response) {
-                    alert(response["msg"])
-                    window.location.reload()
-                }
-            });
-        }
-
-        function refresh() {
-            $.ajax({
-                type: "POST",
-                url: "/posting/refresh",
-                data: {num_give: 0},
-                success: function (response) {
-                    alert(response["msg"])
-                    window.location.reload()
-                }
-            });
-        }
-
-
-    </script>
-
-    <script>
         function sign_out() {
             $.removeCookie('mytoken', {path: '/'});
             alert('로그아웃!')
             window.location.href = "/login"
         }
     </script>
-
 </head>
+
 <body>
 <div style="overflow-x:hidden;">
-<nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-        <a class="navbar-item" href="/">
-            <img src="{{ url_for('static', filename='아령.jpg') }}">
-            <strong class="is-sparta"
-                    style="font-family: 'Stylish', sans-serif;font-size: larger;">오늘의 운동</strong>
-        </a>
-        <p>반갑습니다 {{ user_info.username1 }}님</p>
-        <button class="button is-danger" onclick="sign_out()">로그아웃</button>
-    </div>
-</nav>
-<section class="section">
-    <div id="post-box" class="container">
-        <div class="box">
-            <article class="media">
-                <div class="media-left">
-                    <a class="image is-64x64" href="#">
-                        <img class="is-rounded"
-                             src={{ url_for("static", filename="profile_pics/profile_placeholder.png") }} alt="Image">
-                    </a>
-                </div>
-            </article>
+    {#    네비게이션 바#}
+    <nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img src="{{ url_for('static', filename='아령.jpg') }}">
+                <strong class="is-sparta"
+                        style="font-family: 'Stylish', sans-serif;font-size: larger;">오늘의 운동</strong>
+            </a>
+            <p>반갑습니다 {{ user_info.username1 }}님</p>
+            <button class="button is-danger" onclick="sign_out()">로그아웃</button>
         </div>
-    </div>
-</section>
-<section>
-    <div class="field has-addons">
-        <div class="control">
-            <input class="input" id="input_search" type="text" placeholder="작성자를 검색하세요">
-        </div>
-        <div class="control">
-            <button class="button is-primary" onclick="listing()">
-                Search
+    </nav>
+    {#    검색/초기화/글 작성#}
+    <section>
+        <div class="field has-addons">
+            <div class="control">
+                <input class="input" id="input_search" type="text" placeholder="작성자를 검색하세요">
+            </div>
+            <div class="control">
+                <button class="button is-primary" onclick="listing()">
+                    Search
+                </button>
+            </div>
+            <button onclick="window.location.reload()" class="button is-warning">초기화</button>
+            <button class="button is-link" onclick="window.location.href='/posting/{{ user_info.username }}'">
+                글 작성
             </button>
         </div>
-        <button onclick="window.location.reload()" class="button is-warning">초기화</button>
-        <button class="button is-link" onclick="window.location.href='/posting/{{ user_info.username }}'">
-            글 작성
-        </button>
+    </section>
+    {#    포스팅정보 불러오기#}
+    <div class="post-box">
+        <div class="row row-cols-1 row-cols-md-4 g-4" id="post-card"/>
     </div>
-</section>
-<div class="post-box">
-    <div class="row row-cols-1 row-cols-md-4 g-4" id="post-card"/>
+    <div id="user-box"></div>
 </div>
-<div id="user-box"></div>
-</div>
-
 </body>
+
 </html>

@@ -29,25 +29,12 @@
     <script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
 
     <script>
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById('preview').src = e.target.result;
-                };
-                reader.readAsDataURL(input.files[0]);
-            } else {
-                document.getElementById('preview').src = "";
-            }
-        }
-    </script>
-
-    <script>
         $(document).ready(function () {
             find_post();
             look_feedback()
         });
 
+        {#db에서 포스팅 정보 가져오기 및 출력준비#}
 
         function find_post() {
             $.ajax({
@@ -82,6 +69,7 @@
             })
         }
 
+        {#db에서 댓글 가져오기#}
         function look_feedback() {
             $.ajax({
                 type: 'GET',
@@ -106,6 +94,7 @@
             });
         }
 
+        {#db에 댓글 저장#}
         function get_feedback() {
             let feedback = $('#input_feedback').val()
             let url = window.location.href.split("/")[4]
@@ -121,17 +110,14 @@
             });
         }
     </script>
-</head>
-<body>
-<div>
-    <div>hi</div>
-    <input type="text" value=get() id="input-num"/>
-    <div>{{ user_info }}</div>
-    <div>{{ post_info }}</div>
-    post_info = db.posts.find_one({"num": '2'}, {"_id": False})
 
-    <div id="card"/>
+</head>
+
+<body>
+
+<div>
     <div class="field has-addons">
+        {#        댓글 입력#}
         <div class="control">
             <input class="input" id="input_feedback" type="text" placeholder="댓글입력">
         </div>
@@ -142,9 +128,12 @@
         </div>
     </div>
     <div class="post-box">
-    <div class="row row-cols-1 row-cols-md-4 g-4" id="post-card"/>
-</div>
+        {#        posting 정보 불러오기#}
+        <div class="row row-cols-1 row-cols-md-4 g-4" id="post-card"/>
+    </div>
     <div id="input_feedbacks"/>
 </div>
+
 </body>
+
 </html>
